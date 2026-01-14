@@ -1,374 +1,373 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Austin Haas</title>
-    <style>
-        /* Reset and base layout */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Austin Haas</title>
+    <style>
+        /* Reset and base layout */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-        html, body {
-            height: 100%;
-            font-family: Arial, sans-serif;
-            color: #f5f7ff;
-            overflow: hidden;
-        }
+        html, body {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            color: #f5f7ff;
+            overflow: hidden;
+        }
 
-        body {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 24px;
-        }
+        body {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+        }
 
-        /* Matrix canvas background */
-        #matrixCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            background: radial-gradient(circle at top, #091427 0%, #020410 55%, #000000 100%);
-        }
+        /* Matrix canvas background */
+        #matrixCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: radial-gradient(circle at top, #091427 0%, #020410 55%, #000000 100%);
+        }
 
-        /* Overlay for readability */
-        .overlay {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(
-                135deg,
-                rgba(10, 23, 55, 0.88),
-                rgba(8, 20, 51, 0.94)
-            );
-            backdrop-filter: blur(3px);
-            z-index: -1;
-        }
+        /* Overlay for readability */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(10, 23, 55, 0.88),
+                rgba(8, 20, 51, 0.94)
+            );
+            backdrop-filter: blur(3px);
+            z-index: -1;
+        }
 
-        /* Card container */
-        .card {
-            max-width: 1100px;
-            width: 100%;
-            background: rgba(7, 14, 30, 0.96);
-            border-radius: 16px;
-            box-shadow:
-                0 18px 40px rgba(0, 0, 0, 0.7),
-                0 0 0 1px rgba(102, 126, 234, 0.25);
-            display: grid;
-            grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
-            gap: 24px;
-            padding: 24px;
-        }
+        /* Card container */
+        .card {
+            max-width: 1100px;
+            width: 100%;
+            background: rgba(7, 14, 30, 0.96);
+            border-radius: 16px;
+            box-shadow:
+                0 18px 40px rgba(0, 0, 0, 0.7),
+                0 0 0 1px rgba(102, 126, 234, 0.25);
+            display: grid;
+            grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+            gap: 24px;
+            padding: 24px;
+        }
 
-        /* Left column: profile */
-        .profile {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border-right: 1px solid rgba(120, 144, 255, 0.22);
-            padding-right: 20px;
-        }
+        /* Left column: profile */
+        .profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-right: 1px solid rgba(120, 144, 255, 0.22);
+            padding-right: 20px;
+        }
 
-        .avatar-wrapper {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid rgba(118, 75, 162, 0.7);
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.55);
-            margin-bottom: 18px;
-        }
+        .avatar-wrapper {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid rgba(118, 75, 162, 0.7);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.55);
+            margin-bottom: 18px;
+        }
 
-        .avatar-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+        .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 30%;
+            display: block;
+        }
 
-        h1 {
-            font-size: 2rem;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            text-align: center;
-            margin-bottom: 4px;
-        }
+        h1 {
+            font-size: 2rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 4px;
+        }
 
-        .title {
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 0.22em;
-            color: #9ca8ff;
-            margin-bottom: 16px;
-            text-align: center;
-        }
+        .title {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: #9ca8ff;
+            margin-bottom: 16px;
+            text-align: center;
+        }
 
-        .summary {
-            font-size: 0.9rem;
-            line-height: 1.6;
-            color: #d4dbff;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+        .summary {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #d4dbff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-        .contact-list {
-            list-style: none;
-            width: 100%;
-            font-size: 0.88rem;
-            color: #c3cbff;
-        }
+        .contact-list {
+            list-style: none;
+            width: 100%;
+            font-size: 0.88rem;
+            color: #c3cbff;
+        }
 
-        .contact-list li {
-            margin-bottom: 8px;
-        }
+        .contact-list li {
+            margin-bottom: 8px;
+        }
 
-        .contact-label {
-            font-weight: 600;
-            color: #aab6ff;
-        }
+        .contact-label {
+            font-weight: 600;
+            color: #aab6ff;
+        }
 
-        /* Right column: resume */
-        .resume-section {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        /* Right column: resume */
+        .resume-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
 
-        .resume-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            gap: 8px;
-        }
+        .resume-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 8px;
+        }
 
-        .resume-title {
-            font-size: 1.05rem;
-            text-transform: uppercase;
-            letter-spacing: 0.18em;
-            color: #b6c2ff;
-        }
+        .resume-title {
+            font-size: 1.05rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: #b6c2ff;
+        }
 
-        .resume-note {
-            font-size: 0.8rem;
-            color: #9ea7d9;
-            opacity: 0.9;
-        }
+        .resume-note {
+            font-size: 0.8rem;
+            color: #9ea7d9;
+            opacity: 0.9;
+        }
 
-        .resume-frame {
-            flex: 1;
-            min-height: 420px;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(102, 126, 234, 0.5);
-            background: radial-gradient(circle at top left, #101935, #050814);
-        }
+        .resume-frame {
+            flex: 1;
+            min-height: 420px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(102, 126, 234, 0.5);
+            background: radial-gradient(circle at top left, #101935, #050814);
+        }
 
-        .resume-frame iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+        .resume-frame iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
 
-        .resume-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
+        .resume-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 999px;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            border: 1px solid rgba(130, 153, 255, 0.7);
-            color: #e3e7ff;
-            background: radial-gradient(circle at top left, #3f51b5, #283593);
-            text-decoration: none;
-            cursor: pointer;
-            transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background 0.12s ease-out;
-        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(130, 153, 255, 0.7);
+            color: #e3e7ff;
+            background: radial-gradient(circle at top left, #3f51b5, #283593);
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background 0.12s ease-out;
+        }
 
-        .btn-outline {
-            background: transparent;
-            border-color: rgba(130, 153, 255, 0.45);
-        }
+        .btn-outline {
+            background: transparent;
+            border-color: rgba(130, 153, 255, 0.45);
+        }
 
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 18px rgba(35, 56, 135, 0.6);
-        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(35, 56, 135, 0.6);
+        }
 
-        .btn:active {
-            transform: translateY(0);
-            box-shadow: none;
-        }
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
 
-        /* Responsiveness */
-        @media (max-width: 840px) {
-            body {
-                overflow-y: auto;
-                align-items: flex-start;
-            }
+        /* Responsiveness */
+        @media (max-width: 840px) {
+            body {
+                overflow-y: auto;
+                align-items: flex-start;
+            }
 
-            .card {
-                grid-template-columns: 1fr;
-                padding: 18px;
-            }
+            .card {
+                grid-template-columns: 1fr;
+                padding: 18px;
+            }
 
-            .profile {
-                border-right: none;
-                border-bottom: 1px solid rgba(120, 144, 255, 0.22);
-                padding-right: 0;
-                padding-bottom: 18px;
-                margin-bottom: 8px;
-            }
+            .profile {
+                border-right: none;
+                border-bottom: 1px solid rgba(120, 144, 255, 0.22);
+                padding-right: 0;
+                padding-bottom: 18px;
+                margin-bottom: 8px;
+            }
 
-            .resume-frame {
-                min-height: 380px;
-            }
-        }
+            .resume-frame {
+                min-height: 380px;
+            }
+        }
 
-        @media (max-width: 520px) {
-            .avatar-wrapper {
-                width: 140px;
-                height: 140px;
-            }
+        @media (max-width: 520px) {
+            .avatar-wrapper {
+                width: 140px;
+                height: 140px;
+            }
 
-            h1 {
-                font-size: 1.6rem;
-            }
+            h1 {
+                font-size: 1.6rem;
+            }
 
-            .resume-frame {
-                min-height: 320px;
-            }
+            .resume-frame {
+                min-height: 320px;
+            }
 
-            .resume-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-    </style>
+            .resume-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Matrix rain background -->
-    <canvas id="matrixCanvas"></canvas>
-    <div class="overlay"></div>
+    <!-- Matrix rain background -->
+    <canvas id="matrixCanvas"></canvas>
+    <div class="overlay"></div>
 
-    <!-- Main content -->
-    <main class="card" aria-label="Austin Haas portfolio">
-        <!-- Profile column -->
-        <section class="profile" aria-label="Profile">
-            <div class="avatar-wrapper">
-                <img src="me.jpg" alt="Portrait of Austin Haas">
-            </div>
-            <h1>Austin Haas</h1>
-            <div class="title"> Computer Engineering </div>
-            <p class="summary">
-                Detail-oriented engineer with a focus on secure systems, scalable backend services, 
-                and clear technical communication. Passionate about building reliable tools that solve real problems.
-            </p>
-            <ul class="contact-list">
-                <li><span class="contact-label">Email:</span> cozmobaut@gmail.com</li>
-                <li><span class="contact-label">Location:</span> Erie, Colorado, USA</li>
-                <li><span class="contact-label">LinkedIn:</span> </li>
-                <li><span class="contact-label">GitHub:</span> https://github.com/cozmobaut-hub </li>
-            </ul>
-        </section>
+    <!-- Main content -->
+    <main class="card" aria-label="Austin Haas portfolio">
+        <!-- Profile column -->
+        <section class="profile" aria-label="Profile">
+            <div class="avatar-wrapper">
+                <img src="me.jpg" alt="Portrait of Austin Haas">
+            </div>
+            <h1>Austin Haas</h1>
+            <div class="title"> Computer Engineering </div>
+            <p class="summary">
+                Detail-oriented engineer with a focus on clear technical communication.
+                Passionate about building reliable tools that solve real problems.
+                Willing to learn and adapt in fast-paced environments.
+            </p>
+            <ul class="contact-list">
+                <li><span class="contact-label">Email:</span> cozmobaut@gmail.com</li>
+                <li><span class="contact-label">Location:</span> Erie, Colorado, USA</li>
+                <li><span class="contact-label">GitHub:</span> <a href="https://github.com/cozmobaut-hub" style="color:#c3cbff; text-decoration:underline;">github.com/cozmobaut-hub</a></li>
+            </ul>
+        </section>
 
-        <!-- Resume column -->
-        <section class="resume-section" aria-label="Resume">
-            <header class="resume-header">
-                <h2 class="resume-title">Resume</h2>
-                <span class="resume-note">Embedded PDF · Best viewed on desktop</span>
-            </header>
+        <!-- Resume column -->
+        <section class="resume-section" aria-label="Resume">
+            <header class="resume-header">
+                <h2 class="resume-title">Resume</h2>
+                <span class="resume-note">Embedded PDF · Best viewed on desktop</span>
+            </header>
 
-            <div class="resume-frame">
-                <!-- Resume embedded from local repo file resume.pdf -->
-                <iframe src="resume.pdf" title="Resume of Austin Haas"></iframe>
-            </div>
+            <div class="resume-frame">
+                <!-- Resume embedded from local repo file resume.pdf -->
+                <iframe src="resume.pdf" title="Resume of Austin Haas"></iframe>
+            </div>
 
-            <div class="resume-actions">
-                <a href="resume.pdf" class="btn" download>Download PDF</a>
-                <a href="resume.pdf" class="btn btn-outline" target="_blank" rel="noopener noreferrer">
-                    Open in new tab
-                </a>
-            </div>
-        </section>
-    </main>
+            <div class="resume-actions">
+                <a href="resume.pdf" class="btn" download>Download PDF</a>
+                <a href="resume.pdf" class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+                    Open in new tab
+                </a>
+            </div>
+        </section>
+    </main>
 
-    <script>
-        // Matrix rain effect - adapted to blue tones and slower speed [web:5][web:8]
-        const canvas = document.getElementById('matrixCanvas');
-        const ctx = canvas.getContext('2d');
+    <script>
+        // Matrix rain effect with high alpha characters and stronger fade [web:31][web:39]
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
 
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
 
-        // Characters set (can be tuned)
-        const katakana = 'ァアィイゥウェエォオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン';
-        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const nums = '0123456789';
-        const alphabet = katakana + latin + nums;
+        const katakana = 'ァアィイゥウェエォオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        const alphabet = katakana + latin + nums;
 
-        const fontSize = 16;
-        let columns = canvas.width / fontSize;
-        let rainDrops = [];
+        const fontSize = 16;
+        let columns = canvas.width / fontSize;
+        let rainDrops = [];
 
-        function initRain() {
-            columns = Math.floor(canvas.width / fontSize);
-            rainDrops = [];
-            for (let x = 0; x < columns; x++) {
-                rainDrops[x] = Math.random() * canvas.height / fontSize;
-            }
-        }
+        function initRain() {
+            columns = Math.floor(canvas.width / fontSize);
+            rainDrops = [];
+            for (let x = 0; x < columns; x++) {
+                rainDrops[x] = Math.random() * canvas.height / fontSize;
+            }
+        }
 
-        initRain();
-        window.addEventListener('resize', initRain);
+        initRain();
+        window.addEventListener('resize', initRain);
 
-        function draw() {
-            // Slightly stronger fade for readability
-            ctx.fillStyle = 'rgba(0, 8, 30, 0.08)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        function draw() {
+            // Stronger fade so trails clear and text doesn't overpower UI
+            ctx.fillStyle = 'rgba(0, 8, 30, 0.35)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Blue-cyan matrix text
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, '#64ffda');
-            gradient.addColorStop(0.5, '#3d8bfd');
-            gradient.addColorStop(1, '#1a2a6c');
-            ctx.fillStyle = gradient;
-            ctx.font = fontSize + 'px monospace';
+            // High-alpha blue-cyan characters (solid, not transparent)
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#64ffda');
+            gradient.addColorStop(0.5, '#3d8bfd');
+            gradient.addColorStop(1, '#1a2a6c');
+            ctx.fillStyle = gradient;
+            ctx.font = fontSize + 'px monospace';
 
-            for (let i = 0; i < rainDrops.length; i++) {
-                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-                const x = i * fontSize;
-                const y = rainDrops[i] * fontSize;
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                const x = i * fontSize;
+                const y = rainDrops[i] * fontSize;
 
-                ctx.fillText(text, x, y);
+                ctx.fillText(text, x, y);
 
-                // Slow the rain a bit and reset with low probability
-                if (y > canvas.height && Math.random() > 0.985) {
-                    rainDrops[i] = 0;
-                }
+                if (y > canvas.height && Math.random() > 0.985) {
+                    rainDrops[i] = 0;
+                }
 
-                rainDrops[i] += 0.4; // smaller increment = slower fall
-            }
-        }
+                rainDrops[i] += 0.4; // same speed
+            }
+        }
 
-        // Lower FPS for a more relaxed, professional feel
-        setInterval(draw, 80);
-    </script>
+        // Same FPS
+        setInterval(draw, 80);
+    </script>
 </body>
 </html>
